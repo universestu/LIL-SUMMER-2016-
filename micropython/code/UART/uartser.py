@@ -4,18 +4,16 @@ import network
 import time
 
 uart = UART(0)
-def connect():
-    wlan = network.WLAN(network.STA_IF) 
-    wlan.active(True)       
-    wlan.scan()            
-    wlan.isconnected()      
-    wlan.connect('gogo_mt', 'ilovecpeilovecpe')    
-    wlan.ifconfig()
     
 def main():
-    print('start...')
-    connect()
-    while True:
+    wlan = network.WLAN(network.STA_IF) 
+    if not wlan.isconnected():
+        wlan.active(True)
+        wlan.connect('gogo_mt', 'ilovecpeilovecpe')  
+        while not wlan.isconnected():
+            pass
+    print('network config:', wlan.ifconfig()) 
+    while wlan.isconnected():
         data = uart.read(100)
         if data != None:
             a = str(data[2:])
@@ -40,5 +38,5 @@ def main():
                 time.sleep(1)
                 s.close()
                 i=0
-        
+    
     
